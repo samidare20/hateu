@@ -2,3 +2,4 @@ output.txt
 input.txt
 .vscode/*
 *.exe
+*.o
