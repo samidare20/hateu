@@ -30,7 +30,7 @@ vector<pair<int,int>> grouping(int y,int x,bool visit[][22])
 			int Y=a.first+movey[i];
 			int X=a.second+movex[i];
 			
-			if(Y<0||X<0||X>=size_board||Y>=size_board||visit[Y][X]==true||board[Y][X]==-1) //out of board||already visit||black tile
+			if(Y<0||X<0||X>=size_board||Y>=size_board||visit[Y][X]==true||board[Y][X]==-1||board[Y][X]==987654321) //out of board||already visit||black tile
 				continue;
 				
 			if(board[Y][X]!=0&&board[Y][X]!=nowcolor) //different color and its not rainbow tile
@@ -49,29 +49,45 @@ vector<pair<int,int>> grouping(int y,int x,bool visit[][22])
 	}
 	return board_ans;
 }
-void find_blockgroup()
+bool find_blockgroup()
 {
 	bool visit[22][22]={0,};
+	pair<int,int> standard_ans={0,0};
+	int rainbow_ans=0;
 	vector<pair<int,int>> ans;
 	for(int i=0;i<size_board;i++)
 	{
 		for(int j=0;j<size_board;j++)
 		{
-			if(visit[i][j]==false&&board[i][j]>0)
+			if(visit[i][j]==false&&board[i][j]>0&&board[i][j]!=987654321)
 			{			
 				vector<pair<int,int>> tmp=grouping(i,j,visit);
+				
 				if(ans.size()<tmp.size())
-					ans=tmp;
+				{
+					pair<int,int> a={0,0};
+					for(auto i:tmp)
+					{
+						if(i.first>a.first)
+							a=i;
+						else if(i.first==a.first&&i.second>a.second)
+							a=i;
+					}
+					ans=tmp;	
+				}
+				
 			}
 		}
 	}
+	if(ans.size()<2)
+		return false;
 	for(auto i:ans)
 	{
 //		cout<<i.first<<" "<<i.second<<" "<<ans.size()<<"\n";
 		board[i.first][i.second]=987654321;		
 	}
 	score+=ans.size()*ans.size();
-
+	return true;
 }
 void turn_board()
 {
@@ -80,7 +96,7 @@ void turn_board()
 	{
 		for(int j=0;j<size_board;j++)
 		{
-			tmp[j][i]=board[i][j];
+			tmp[size_board-1-j][i]=board[i][j];
 		}
 	}
 	for(int i=0;i<size_board;i++)
@@ -91,7 +107,27 @@ void turn_board()
 }
 void gravity()
 {
-	
+	for(int y=size_board-2;y>=0;y--)
+	{
+		for(int x=0;x<size_board;x++)
+		{
+			if(board[y][x]!=-1)
+			{
+				int i=y;
+				while(i<size_board)
+				{
+					if(board[i+1][x]==987654321)
+						i+=1;
+					else
+						break;
+				}
+				if(i==y)
+					continue;
+				board[i][x]=board[y][x];
+				board[y][x]=987654321;
+			}
+		}
+	}
 }
 int main()
 {
@@ -105,9 +141,40 @@ int main()
 			cin>>board[i][j];
 		}
 	}
-	find_blockgroup();
-	gravity();
-	turn_board();
-	gravity();
+	while(1)
+	{
+	
+	
+		bool ret=find_blockgroup();
+		if(ret==false)
+			break;
+		for(int i=0;i<size_board;i++)
+		{
+			for(int j=0;j<size_board;j++)
+			{
+				if(board[i][j]==987654321)
+					cout<<"* ";
+				else
+					cout<<board[i][j]<<" ";
+			}
+			cout<<"\n";
+		}
+		cout<<"delte============================\n";
+		gravity();
+		turn_board();
+		gravity();
+		for(int i=0;i<size_board;i++)
+		{
+			for(int j=0;j<size_board;j++)
+			{
+				if(board[i][j]==987654321)
+					cout<<"* ";
+				else
+					cout<<board[i][j]<<" ";
+			}
+			cout<<"\n";
+		}
+		cout<<score<<"============================\n";
+	}
 	cout<<score;
 }
