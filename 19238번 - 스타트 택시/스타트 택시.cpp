@@ -29,11 +29,16 @@ int choice_nextguest()
     int visit[22][22]={0,};
     visit[position.first][position.second]=1;
     q.push(position);
-
+    
     while(!q.empty())
     {
         auto a=q.front();
         q.pop();
+
+        if(board_start[a.first][a.second]!=0)
+        {
+
+        }
 
         for(int i=0;i<4;i++)
         {
