@@ -1,5 +1,5 @@
 output.txt
 input.txt
 .vscode/*
-*.exe
+/**/*.exe
 *.o
