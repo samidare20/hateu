@@ -46,16 +46,16 @@
 
 1. Break mineral.
 
-2. Check if there is any mineral block can be fallen.
+2. Check if there is any mineral block that is floating.
 
-    2.1. BFS all tiles. If BFS starts at 'x' data, collect all connected 'x' data and check if it can be fallen.
+    2.1. BFS all cells. If BFS starts at 'x' data, collect all connected 'x' data and check if it can be fallen.
 
 3. Loop.
 
-How can we check if mireral cluster can be fallen? 
+How to make mineral cluster fall?
 
-1. Make mineral cluster's position data to '.'. Each block's positions must be saved.
+1.  Identify and temporarily remove the cluster: Once a floating cluster is identified, save the coordinates of all its mineral blocks and change their cells on the board to empty ('.').
 
-2. Reduce each data y value of the mineral cluster by 1 until it hits the bottom, or it touches data with another 'x' value. 
+2.  Determine the maximum distance the cluster can fall. This is done by checking how many empty rows are below every block in the cluster before it hits the ground or another mineral.
 
-3. That value is how much can be mineral cluster fallen. Make that position data to 'x'.
+3.  Move the cluster down by the calculated fall distance by updating the board with the cluster's new block positions.
