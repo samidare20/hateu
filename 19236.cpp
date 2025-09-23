@@ -19,26 +19,24 @@ bool shark_cmp(shark a,shark b)
 {
     return a.number<b.number;
 }
-void pb(vector<vector<shark>>board)
+void pb(vector<vector<int>>board)
 {
     for(int i=0;i<4;i++)
     {
         for(int j=0;j<4;j++)
         {
-            if(board[i][j].alive==false)
-                cout<<"0 ";
-            else
-                cout<<board[i][j].number<<" ";
+            cout<<board[i][j]<<" ";
         }
         cout<<"\n";
     }
 }
-vector<vector<shark>> move_fish(vector<vector<shark>>board,vector<shark> shark_board,int x,int y)
+pair<vector<vector<int>>,vector<shark>> move_fish(vector<vector<int>> board,vector<shark> shark_board,int x,int y)
 {
-    for(shark i:shark_board)
-        cout<<i.number<<" "<<i.position.first<<" "<<i.position.second<<"\n";
+    // for(shark i:shark_board)
+        // cout<<i.number<<" "<<i.position.first<<" "<<i.position.second<<"\n";
     for(shark i : shark_board)
     {
+        // cout<<"now iter : "<<i.number<<"\n";
         if(i.alive==false)
             continue;
         int count=0;
@@ -48,47 +46,61 @@ vector<vector<shark>> move_fish(vector<vector<shark>>board,vector<shark> shark_b
             int X=i.position.second+moves[i.direction].second;
             if(!(X<0||Y<0||X>=4||Y>=4||(Y==y&&X==x)))
             {
-                shark tmp=board[Y][X];
-                board[Y][X]=board[i.position.first][i.position.second];
-                board[i.position.first][i.position.second]=tmp;
-                cout<<"changed "<<board[Y][X].number<<" "<<board[i.position.first][i.position.second].number<<"\n";
+                // cout<<"changed "<<board[Y][X]<<" "<<board[i.position.first][i.position.second]<<"\n";
 
-                pair<int,int> a=board[Y][X].position;
-                board[Y][X].position=board[i.position.first][i.position.second].position;
-                board[i.position.first][i.position.second].position=board[Y][X].position;
+                pair<int,int> a=shark_board[board[Y][X]].position;
+                shark_board[board[Y][X]].position=shark_board[board[i.position.first][i.position.second]].position;
+                shark_board[board[i.position.first][i.position.second]].position=a;
                 
-                board[Y][X].direction=i.direction;
-                
-                pb(board);
-                
+                int b=board[Y][X];
+                board[Y][X]=board[i.position.first][i.position.second];
+                board[i.position.first][i.position.second]=b;
                 break;
             }
             i.direction=(i.direction+1)%9;
-            // board[i.position.first][i.position.second].direction=(board[i.position.first][i.position.second].direction+1)%9;
             count++;
         }
     }
-    return board;
+    return {board,shark_board};
 }
-void solv(vector<vector<shark>> board,vector<shark> shark_board,int x,int y,int direction,int ans)
+int solv(vector<vector<int>> board,vector<shark> shark_board,int x,int y,int direction,int ans)
 {
-    
-    board=move_fish(board,shark_board,x,y);
+    cout<<ans<<": ans \n";
+    cout<<y<<" "<<x<<"\n";
+    auto a=move_fish(board,shark_board,x,y);
+    board=a.first;
+    shark_board=a.second;
     pb(board);
+    int result=0;
+    int X=x;
+    int Y=y;
+    while(0<=X&&X<4&&0<=Y&&Y<4)
+    {
+        X+=moves[direction].second;
+        Y+=moves[direction].first;
+        // cout<<X<<" "<<Y<<"\n";
+        if(!(0<=X&&X<4&&0<=Y&&Y<4))
+            break;
 
-    // while(x<4&&y<4&&x>=0&&y>=0)
-    // {
-    //     x+=moves[direction].second;
-    //     y+=moves[direction].first;
-    //     if(!(x<4&&y<4&&x>=0&&y>=0))
-    //         break;
-        
-    // }
+        if(board[Y][X]==-1)
+            continue;
+        shark_board[board[Y][X]].alive=false;
+        int tmp=board[Y][X];
+        board[Y][X]=-1;
+        result=max(result,solv(board,shark_board,X,Y,shark_board[tmp].direction,ans+shark_board[tmp].number));
+        shark_board[board[Y][X]].alive=true;
+        board[Y][X]=tmp;
+    }
+    return result;
 }
 int main()
 {
     vector<shark> shark_board;
-    vector<vector<shark>> board(4,vector<shark>(4));
+    vector<vector<int>> board(5,vector<int>(5));
+    shark t;
+    t.number=0;
+    t.alive=false;
+    shark_board.push_back(t);
     for(int i=0;i<4;i++)
     {
         for(int j=0;j<4;j++)
@@ -96,12 +108,14 @@ int main()
             shark a;
             cin>>a.number>>a.direction;
             a.alive=true;
-            board[i][j]=a;
+            board[i][j]=a.number;
             a.position={i,j};
             shark_board.push_back(a);
         }
     }
     sort(shark_board.begin(),shark_board.end(),shark_cmp);
-    board[0][0].alive=false;
-    solv(board,shark_board,0,0,board[0][0].direction,board[0][0].number);
+    shark_board[board[0][0]].alive=false;
+    int d=shark_board[board[0][0]].direction;
+    board[0][0]=-1;
+    cout<<solv(board,shark_board,0,0,d,shark_board[board[0][0]].number);
 }
