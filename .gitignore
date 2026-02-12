@@ -4,3 +4,8 @@ input.txt
 /**/*.exe
 *.o
 /**/output/*
+obj/
+bin/
+
+workspace/**
+!workspace/program.cs
