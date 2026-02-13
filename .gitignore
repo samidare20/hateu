@@ -6,6 +6,3 @@ input.txt
 /**/output/*
 obj/
 bin/
-
-workspace/**
-!workspace/program.cs
