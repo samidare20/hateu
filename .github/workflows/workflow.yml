@@ -20,7 +20,7 @@ jobs:
           	if ! grep -q "### 성능 요약" "$file"; then
           		echo "$file" >> not_filled_files.txt
           	fi
-          echo < not_filled_files.txt
+          cat not_filled_files.txt
           done < <(find . -name "*.md" -print0)
       - name: Update Performance in Markdown
         uses: dltkdgns00/BOJ-action@main
