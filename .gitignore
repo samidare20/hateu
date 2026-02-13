@@ -6,3 +6,4 @@ input.txt
 /**/output/*
 obj/
 bin/
+**/.vs/**
