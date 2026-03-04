@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "hateu": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\00_GitProjects\\hateu"
+    },
+    "witharg": {
+      "commandName": "Project",
+      "commandLineArgs": "<i.txt >out.txt",
+      "workingDirectory": "C:\\00_GitProjects\\hateu\\workspace"
+    }
+  }
+}

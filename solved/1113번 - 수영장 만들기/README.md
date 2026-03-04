@@ -1,11 +1,10 @@
 # 1113번: 수영장 만들기 - <img src="https://static.solved.ac/tier_small/15.svg" style="height:20px" /> Gold I
 
 <!-- performance -->
-
-<!-- 문제 제출 후 깃허브에 푸시를 했을 때 제출한 코드의 성능이 입력될 공간입니다.-->
-
+### 성능 요약
+메모리: 19680 KB, 시간: 516 ms
 <!-- end -->
-
+  
 ## 문제
 
 [문제 링크](https://boj.kr/1113)
